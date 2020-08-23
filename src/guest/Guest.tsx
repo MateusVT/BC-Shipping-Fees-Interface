@@ -7,6 +7,9 @@ import Http from "../utils/Http";
 import { SingleSelect } from "react-select-material-ui"
 import { Product, Company } from "../types/Types";
 import Select, { convertToSelectProps } from "../utils/Select";
+import Geosuggest from 'react-geosuggest';
+import GoogleMaps from "../utils/AutoCompleteLocation";
+import SelectLocation from "../utils/AutoCompleteLocation";
 
 
 
@@ -102,10 +105,12 @@ const Guest = () => {
                             <Grid item xs={6} style={{ padding: "1%", marginBottom: "5%" }}>
                                 <InputLabel>Produto</InputLabel>
                                 <Select items={convertToSelectProps(products, "description", "idProduct")}></Select>
+                                <SelectLocation label={"Selecione a Origem"} />
                             </Grid>
                             <Grid item xs={6} style={{ padding: "1%", marginBottom: "5%" }}>
                                 <InputLabel>Empresa</InputLabel>
-                                <Select items={convertToSelectProps(products, "description", "idProduct")}></Select>
+                                <Select items={convertToSelectProps(products, "description", "idProduct")} />
+                                <SelectLocation label={"Selecione o Destino"} />
                             </Grid>
                         </Grid>
                     </div>
