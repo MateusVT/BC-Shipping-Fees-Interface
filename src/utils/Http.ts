@@ -1,11 +1,9 @@
 import Globals from "./Globals"
-import { HAL } from "../types/Types"
 
 type RequestOptions<E> = {
 	body?: any
 	external?: boolean
 	api?: string
-	isHAL?: boolean
 	onError?: (error: any) => void
 	onFinish?: () => void
 	onSuccess?: (data: E) => void
@@ -86,9 +84,6 @@ class Http {
 		}
 	}
 
-	static getHALContent(response: HAL, contentAttr) {
-		return response._embedded[contentAttr]
-	}
 }
 
 export default Http
