@@ -10,11 +10,3 @@ export type Company = {
     fixedFee: number,
     kmByKgFee: number
 }
-
-
-export type HAL =
-    {
-        _embedded: any,
-        _links: {
-        }
-    }

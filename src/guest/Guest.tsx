@@ -10,6 +10,7 @@ import Select, { convertToSelectProps } from "../utils/Select";
 import Geosuggest from 'react-geosuggest';
 import GoogleMaps from "../utils/AutoCompleteLocation";
 import SelectLocation from "../utils/AutoCompleteLocation";
+import Table from "./Table";
 
 
 
@@ -100,7 +101,7 @@ const Guest = () => {
                     </Typography>
                 </div>
                 <div style={{ height: "70%" }}>
-                    <div style={{ height: "100%", display: "flex" }}>
+                    {/* <div style={{ height: "100%", display: "flex" }}>
                         <Grid style={{ width: "100%" }} container>
                             <Grid item xs={6} style={{ padding: "1%", marginBottom: "5%" }}>
                                 <InputLabel>Produto</InputLabel>
@@ -113,16 +114,17 @@ const Guest = () => {
                                 <SelectLocation label={"Selecione o Destino"} />
                             </Grid>
                         </Grid>
-                    </div>
+                    </div> */}
+                    <Table />
                 </div>
-                <div style={{ height: "20%" }}>
+                {/* <div style={{ height: "20%" }}>
                     <Button color="primary"
                         onClick={() => { setScreen("guest-cad") }}
                         style={{
                             fontFamily: 'Montserrat, sans-serif', borderRadius: "5px"
                             // width: "80%", height: "90%", fontSize: "1.2vw"
                         }} variant="contained">Calcular</Button>
-                </div>
+                </div> */}
             </Paper>
         );
     }
