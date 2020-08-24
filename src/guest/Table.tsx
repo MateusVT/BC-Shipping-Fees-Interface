@@ -1,71 +1,73 @@
-import React from 'react';
-import MaterialTable, { Column } from 'material-table';
-import tableIcons from '../utils/TableIcons';
-import { Product } from '../types/Types';
 import { IconButton } from '@material-ui/core';
-import Eye from "@material-ui/icons/RemoveRedEyeOutlined"
-
-interface ProductRow extends Product {
-    distance?: number
-}
+import Eye from "@material-ui/icons/RemoveRedEyeOutlined";
+import MaterialTable, { Column } from 'material-table';
+import React from 'react';
+import { Product } from '../types/Types';
+import tableIcons from '../utils/TableIcons';
+import { isFullHD } from '../utils/Responsiveness';
 
 interface TableState {
-    columns: Array<Column<ProductRow>>;
-    data: ProductRow[];
+    columns: Array<Column<Product>>;
+    data: Product[];
 }
 
-export default function Table() {
+
+type TableProps = {
+    selectedProduct: (idProduct?: Product) => void
+    productAdd: (product: Product) => void
+    products: Product[]
+}
+
+export default function Table(props: TableProps) {
     const [state, setState] = React.useState<TableState>({
         columns: [
             { title: 'Produto', field: 'description' },
-            { title: 'Peso', field: 'weight', type: 'numeric' },
-            { title: 'Distância', field: 'distance', type: 'numeric' },
+            { title: 'Peso', field: 'weight', type: 'numeric', render: rowData => <span>{rowData.weight} Kg</span> },
             {
-                title: 'Visualizar Orçamentos', field: 'distance', type: 'numeric', render: rowData => <IconButton
-                    title="Visualizar"
-                    edge="end"
-                    style={{
-                        padding: "0px",
-                        marginRight: "10px"
-                    }}
-                    onClick={() => {
-                    }}
-                >
-                    <Eye fontSize="default" />
-                </IconButton>
+                title: 'Visualizar Orçamentos', headerStyle: { justifyContent: "center" }, field: 'distance', type: 'numeric', render: rowData =>
+                    <IconButton
+                        title="Visualizar"
+                        edge="end"
+                        style={{
+                            padding: "0px",
+                            marginRight: "50px"
+                        }}
+                        onClick={() => {
+                            props.selectedProduct(rowData)
+                        }}
+                    >
+                        <Eye fontSize="default" />
+                    </IconButton>
             },
         ],
-        data: [
-            { idProduct: 0, description: "Fone Ouvido", weight: 1, distance: 1 },
-            { idProduct: 1, description: "Controle Xbox", weight: 3, distance: 1 },
-            { idProduct: 2, description: "Pc Gamer", weight: 35, distance: 1 },
-            { idProduct: 3, description: "Fone Ouvido", weight: 1, distance: 430 },
-            { idProduct: 4, description: "Fone Ouvido", weight: 1, distance: 33 },
-            { idProduct: 5, description: "Fone Ouvido", weight: 1, distance: 50 },
-            { idProduct: 6, description: "Controle Xbox", weight: 1, distance: 100 },
-            { idProduct: 7, description: "Kit Gamer", weight: 3, distance: 1000 },
-            { idProduct: 8, description: "Teclado + Fone", weight: 5, distance: 5 },
-            { idProduct: 9, description: "PC Gamer", weight: 6, distance: 1000 },
-            { idProduct: 10, description: "Fone Ouvido gamer", weight: 35, distance: 65 }
-        ],
+        data: props.products
     });
 
     return (
         <MaterialTable
+            options={{ pageSize: isFullHD() ? 7 : 6 }}
+            style={{ width: "50%" }}
             title="Lista de Produtos"
             columns={state.columns}
             data={state.data}
             icons={tableIcons as any}
+            localization={{
+                header: {
+                    actions: "Ações"
+                },
+                toolbar: {
+                    searchPlaceholder: "Pesquisar"
+                },
+                body: {
+                    emptyDataSourceMessage: "Nenhum elemento encontrado!"
+                }
+            }}
             editable={{
                 onRowAdd: (newData) =>
                     new Promise((resolve) => {
                         setTimeout(() => {
                             resolve();
-                            setState((prevState) => {
-                                const data = [...prevState.data];
-                                data.push(newData);
-                                return { ...prevState, data };
-                            });
+                            props.productAdd(newData)
                         }, 600);
                     }),
                 onRowUpdate: (newData, oldData) =>

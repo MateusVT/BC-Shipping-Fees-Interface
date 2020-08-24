@@ -1,37 +1,20 @@
-import { Button, Grid, IconButton, Paper, Typography, MenuItem, InputLabel } from "@material-ui/core";
-import { Facebook, HeadsetMic, Instagram, LinkedIn } from "@material-ui/icons";
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@material-ui/core";
+import { Business } from "@material-ui/icons";
+import React, { useEffect, useState } from 'react';
+import { Budget, Company, Product } from "../types/Types";
 import CustomInputForm from "../utils/CustomInputForm";
 import Globals from '../utils/Globals';
 import Http from "../utils/Http";
-import { SingleSelect } from "react-select-material-ui"
-import { Product, Company } from "../types/Types";
-import Select, { convertToSelectProps } from "../utils/Select";
-import Geosuggest from 'react-geosuggest';
-import GoogleMaps from "../utils/AutoCompleteLocation";
-import SelectLocation from "../utils/AutoCompleteLocation";
 import Table from "./Table";
-
-
-
-export const PageHeader = () => {
-    return (
-        <div style={{ height: "100%", width: "100%", background: "white" }}>
-            {/* <div className="container">
-                <h1 className="logo">
-                    <a href="https://boacompra.com">BoaCompra</a>
-                </h1>
-            </div> */}
-        </div>
-    );
-}
 
 
 const Guest = () => {
 
-    const [screen, setScreen] = useState<"guest-home" | "guest-cad">("guest-home");
     const [products, setProducts] = useState<Product[]>([]);
     const [companies, setCompanies] = useState<Company[]>([]);
+    const [openDialogUnregistred, setOpenDialogUnregistred] = useState<boolean>(false);
+    const [selectedProduct, setSelectedProduct] = useState<number>();
+    const [selectedUnregisteredProduct, setSelectedUnregisteredProduct] = useState<Product>();
 
     function handleLoadProducts() {
         Http.get({
@@ -40,7 +23,6 @@ const Guest = () => {
                 console.log("erro")
             },
             onSuccess: (products: Product[]) => {
-                console.log(products)
                 setProducts(products)
             }
         })
@@ -70,11 +52,12 @@ const Guest = () => {
         return (
             <div style={{ height: "30%", width: "40%", display: "flex", alignItems: "center", backgroundColor: Globals.defaultBackgroundColor }}>
                 <Grid container>
-                    <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Grid item xs={12} >
                         <Typography style={{ textAlign: "center", marginTop: "3%", lineHeight: "3vw", fontSize: "2.0vw", fontWeight: "bold", color: "#1d6960", fontFamily: 'Montserrat, sans-serif' }}>
-                            <br />
-                        Seja Bem-Vindo!
+                            Seja Bem-Vindo!
                     </Typography>
+                    </Grid>
+                    <Grid item xs={12} >
                         <Typography style={{ textAlign: "center", marginTop: "1%", fontSize: "1.0vw", color: "#262626" }}>
                             {"Vamos te ajudar a encontrar a forma mais barata de envio para seus produtos."}<br />
                         </Typography>
@@ -85,66 +68,114 @@ const Guest = () => {
         );
     }
 
-    function InfoCard() {
 
 
-
-
+    function BudgetPanel() {
         return (
-            <Paper elevation={0} style={{ width: "50%", height: "70%", borderRadius: "2px", marginRight: "5%", padding: 15 }}>
-                <div style={{ height: "10%" }}>
-                    <Typography style={{
-                        textAlign: "center", fontSize: "1.7vw", fontWeight: "bold", color: Globals.defaultFontColor,
-                        fontFamily: 'Montserrat, sans-serif'
-                    }}>{
-                            "Quero ser parceiro"}
-                    </Typography>
-                </div>
-                <div style={{ height: "70%" }}>
-                    {/* <div style={{ height: "100%", display: "flex" }}>
-                        <Grid style={{ width: "100%" }} container>
-                            <Grid item xs={6} style={{ padding: "1%", marginBottom: "5%" }}>
-                                <InputLabel>Produto</InputLabel>
-                                <Select items={convertToSelectProps(products, "description", "idProduct")}></Select>
-                                <SelectLocation label={"Selecione a Origem"} />
-                            </Grid>
-                            <Grid item xs={6} style={{ padding: "1%", marginBottom: "5%" }}>
-                                <InputLabel>Empresa</InputLabel>
-                                <Select items={convertToSelectProps(products, "description", "idProduct")} />
-                                <SelectLocation label={"Selecione o Destino"} />
-                            </Grid>
-                        </Grid>
-                    </div> */}
-                    <Table />
-                </div>
-                {/* <div style={{ height: "20%" }}>
-                    <Button color="primary"
-                        onClick={() => { setScreen("guest-cad") }}
-                        style={{
-                            fontFamily: 'Montserrat, sans-serif', borderRadius: "5px"
-                            // width: "80%", height: "90%", fontSize: "1.2vw"
-                        }} variant="contained">Calcular</Button>
-                </div> */}
-            </Paper>
+            <Table selectedProduct={(product) => {
+                if (product.idProduct) {
+                    setSelectedProduct(product.idProduct)
+                } else {
+                    setSelectedUnregisteredProduct(product)
+                    setOpenDialogUnregistred(true)
+                }
+            }} productAdd={(product) => { setProducts([...products, product]) }} products={products} />
         );
+    }
+
+
+
+    function BudgetDialog() {
+
+        const [inputDistance, setInputDistance] = useState<string>()
+        const [companiesBudget, setCompaniesBudget] = useState<Budget[]>()
+
+        function handleCalculateRegisteredBudget() {
+            Http.get({
+                path: `/shipping-costs/by-registered-product?idProduct=${selectedProduct}&distance=${inputDistance}`,
+                onError: () => {
+                    console.log("erro")
+                },
+                onSuccess: (companies: Budget[]) => {
+                    setCompaniesBudget(companies)
+                }
+            })
+        }
+
+        function handleCalculateUnregisteredBudget() {
+            console.log({
+                "product": selectedUnregisteredProduct as Product,
+                "distance": inputDistance
+            })
+            Http.post({
+                path: `/shipping-costs/by-unregistered-product`,
+                body: {
+                    "product": selectedUnregisteredProduct as Product,
+                    "distance": inputDistance
+                },
+                onError: () => {
+                    console.log("erro")
+                },
+                onSuccess: (companies: Budget[]) => {
+                    setCompaniesBudget(companies)
+                }
+            })
+        }
+
+        return <Dialog onClose={() => {
+            setSelectedProduct(null)
+            setSelectedUnregisteredProduct(null)
+            setOpenDialogUnregistred(false)
+        }} aria-labelledby="simple-dialog-title" open={selectedProduct != null || openDialogUnregistred}>
+            <DialogTitle id="simple-dialog-title">
+                Orçamentos por empresa</DialogTitle>
+            <DialogContent>
+                <CustomInputForm
+                    id={"distance"}
+                    label="Informe a distância em Km(s)"
+                    required
+                    value={inputDistance}
+                    name={"distance"}
+                    onChange={(_, value) => { setInputDistance(value) }}
+                    maxLength={50}
+                    inputType={"number"}
+                />
+            </DialogContent>
+
+            <List>
+                {companiesBudget && companiesBudget.map((company, index) => (
+                    <ListItem button style={index == 0 ? { backgroundColor: "#87d855bd" } : {}} onClick={() => { }} key={company.companyName}>
+                        <ListItemAvatar>
+                            <Business />
+                        </ListItemAvatar>
+                        <ListItemText primary={company.companyName} secondary={company.budget + " R$"} />
+                    </ListItem>
+
+                ))}
+            </List>
+            <DialogActions style={{ display: "flex", justifyContent: "center" }}>
+                <Button onClick={selectedUnregisteredProduct ? handleCalculateUnregisteredBudget : handleCalculateRegisteredBudget} color="primary" variant={"contained"}>
+                    Calcular Orçamento
+                    </Button>
+            </DialogActions>
+        </Dialog >
     }
 
     function GuestHome() {
 
         return (
             <div style={{ width: "100%", height: "100%", overflowY: "hidden" }}>
-                <div style={{ width: "100%", height: "10%" }}>
-                    <PageHeader />
-                </div>
+
                 <div style={{
                     background: "url(public/img/uol-background.jpg) no-repeat center ",
-                    backgroundSize: "100% 100%", width: "100%", height: "87%"
+                    backgroundSize: "100% 100%", width: "100%", height: "97%"
                 }}>
                     <div style={{ width: "100%", display: "flex", justifyContent: "center", padding: "1%" }}>
                         <TopLetter />
                     </div>
                     <div style={{ width: "100%", height: "70%", display: "flex", justifyContent: "center", padding: "1%" }}>
-                        <InfoCard />
+                        <BudgetPanel />
+                        <BudgetDialog />
                     </div>
 
                 </div>
@@ -160,7 +191,7 @@ const Guest = () => {
 
     return (
         <>
-            {screen == "guest-home" && <GuestHome />}
+            <GuestHome />
         </>
     );
 }

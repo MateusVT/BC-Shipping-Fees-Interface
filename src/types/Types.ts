@@ -1,5 +1,5 @@
 export type Product = {
-    idProduct: number,
+    idProduct?: number,
     description: string,
     weight: number
 }
@@ -9,4 +9,9 @@ export type Company = {
     name: number,
     fixedFee: number,
     kmByKgFee: number
+}
+
+export type Budget = {
+    companyName: string,
+    budget: number
 }
