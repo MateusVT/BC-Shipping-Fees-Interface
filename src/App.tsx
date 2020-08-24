@@ -16,5 +16,5 @@ function App() {
   )
 }
 
-export default React.memo(App)
 ReactDOM.render(<App />, document.getElementById("root"))
+export default React.memo(App)
