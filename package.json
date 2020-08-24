@@ -69,6 +69,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "autosuggest-highlight": "^3.1.1",
+    "case-sensitive-paths-webpack-plugin": "^2.3.0",
     "material-table": "^1.68.1",
     "react-geosuggest": "^2.14.0",
     "react-icons": "^3.10.0",
