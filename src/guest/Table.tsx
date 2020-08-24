@@ -51,6 +51,7 @@ export default function Table(props: TableProps) {
             columns={state.columns}
             data={state.data}
             icons={tableIcons as any}
+            isLoading={state.data.length == 0}
             localization={{
                 header: {
                     actions: "Ações"
