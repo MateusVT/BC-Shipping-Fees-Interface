@@ -12,6 +12,12 @@ A simple React web interface that allows a user to acess the best shipping budge
 - Typescript
 - MaterialUI
 
+### Running the project
+```console
+root@root:~$ npm install
+root@root:~$ npm run start
+```
+
 ## Avaiable on
 ### [Shipping-Fees-Interface]
 ```
