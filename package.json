@@ -23,9 +23,9 @@
     "start-dev": "webpack-dev-server --config=configs/webpack/dev.js",
     "dev": "run-p dev:**",
     "dev:server": "nodemon server.js",
-    "dev:app": "cd client && yarn start",
-    "build:app": "cd client && yarn build",
-    "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "dev:app": "yarn start",
+    "build:app": "yarn build",
+    "heroku-postbuild": "npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "devDependencies": {
     "nodemon": "^2.0.3",
