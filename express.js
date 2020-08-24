@@ -1,18 +1,13 @@
-
 const express = require('express');
-const favicon = require('express-favicon');
+const http = require('http');
 const path = require('path');
 
-const app = express();
-const port = process.env.PORT || 3000;
+var app = express();
 
-app.use(express.static(path.resolve(__dirname, './client/build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', './client/build/index.html'));
-});
+const port = process.env.PORT || '8080';
+app.set('port', port);
 
-app.listen(port, () => {
-  console.info(`Server listening on port ${port}`);
-});
-
+const server = http.createServer(app);
+server.listen(port, () => console.log(`Running on localhost:${port}`));

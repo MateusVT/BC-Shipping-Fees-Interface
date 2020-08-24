@@ -1,8 +1,10 @@
 {
   "name": "shippining-fees",
   "version": "0.1.0",
+  "main": "express.js",
   "engines": {
-    "node": "13.x"
+    "node": "13.x",
+    "npm": "~5.6.0"
   },
   "private": true,
   "keywords": [
@@ -16,14 +18,11 @@
     "boilerplate"
   ],
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "build": "webpack -p --config=configs/webpack/prod.js",
-    "lint": "eslint './src/**/*.{js,ts,tsx}' --quiet",
-    "start": "npm run start-dev",
-    "start-dev": "webpack-dev-server --config=configs/webpack/dev.js",
-    "start-prod": "node express.js"
-    
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "postinstall": "react-scripts build"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -73,7 +72,6 @@
     "body-parser": "*",
     "case-sensitive-paths-webpack-plugin": "^2.3.0",
     "cwebp-bin": "^6.1.1",
-    "express": "*",
     "express-favicon": "^2.0.1",
     "material-table": "^1.68.1",
     "path": "^0.12.7",
@@ -81,6 +79,10 @@
     "react-icons": "^3.10.0",
     "react-select-material-ui": "^6.7.0",
     "react-window": "^1.8.5",
-    "update": "^0.7.4"
+    "update": "^0.7.4",
+    "express": "^4.16.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.1.1"
   }
 }
